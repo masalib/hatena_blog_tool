@@ -21,7 +21,7 @@ node.js install
 
 - `git clone https://github.com/masalib/hatena_blog_tool.git hatena_blog_tool`
 - `cd hatena_blog_tool`
-- `npm install`
+- `npm install wsse async cheerio cheerio-httpcli --save `
 
 Create the environment files below in `./config.json`.
 
