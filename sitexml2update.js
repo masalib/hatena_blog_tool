@@ -46,26 +46,25 @@ var postdata = (function(param) {return param[0];})`<?xml version="1.0" encoding
 
 //読み込むXMLを指定
 var temppath = "./tempxml/" + process.argv[2];
+//console.log(temppath);
 
-
-var hatetena_mode =  process.argv[3];
-if (!(hatetena_mode == 'hatena' || hatetena_mode == 'markdown' || hatetena_mode == 'html')) {
-    console.error('mode error hatena or markdown or html entry');
-    process.exit(1);
-}
+//var hatetena_mode =  process.argv[3];
+//if (!(hatetena_mode == 'hatena' || hatetena_mode == 'markdown' || hatetena_mode == 'html')) {
+//    console.error('mode error hatena or markdown or html entry');
+//    process.exit(1);
+//}
 
 
 var http_request_options;
+var editlink;
 
 async.series([
     function (callback) {
             fs.readFile(temppath,"utf-8",function(err,data) {
-
 		   if (err) {
 		       return console.error(err);
 			process.exit(1);
 		   }
-
 		    //summaryは「"」や「'」の閉じ忘れがあるので消す
 		    data = data.replace(/<summary(.|\s)*?<\/(no)?summary>/gi, '');
 
@@ -75,11 +74,66 @@ async.series([
 			content = $(this).toString();
 		    });	
 
-		    //console.log(content);
-		    //process.exit(1);
+		    $("link").each(function(i, el) {
+			if ($(this).attr('rel') == 'edit'){
+				editlink = $(this).attr('href');
+			}
+		    });	
+
+		    //SSL化対応
+			//youtube
+			content = content.replace(/http\:\/\/www\.youtube/gi, 'https://www.youtube');
+			content = content.replace(/http\:\/\/img\.youtube\.com/gi, 'https://img.youtube.com');
+
+			//rakuten
+			content = content.replace(/http\:\/\/thumbnail\.image\.rakuten\.co\.jp/gi, 'https://thumbnail.image.rakuten.co.jp');
+			content = content.replace(/http\:\/\/hbb\.afl\.rakuten\.co\.jp/gi, 'https://hbb.afl.rakuten.co.jp');
+
+			//Amazonアフィリエイト
+			content = content.replace(/http\:\/\/ecx\.images-amazon\.com/gi, 'https://images-fe.ssl-images-amazon.com');
+
+			//楽天アフィリエイト
+			content = content.replace(/http\:\/\/hbb\.afl\.rakuten\.co\.jp/gi, 'https://hbb.afl.rakuten.co.jp');
+			content = content.replace(/http\:\/\/hb\.afl\.rakuten\.co\.jp/gi, 'https://hb.afl.rakuten.co.jp');
+			content = content.replace(/http\:\/\/thumbnail\.image\.rakuten\.co\.jp/gi, 'https://thumbnail.image.rakuten.co.jp');
+
+			//A8 
+			content = content.replace(/http\:\/\/px\.a8\.net/gi, 'https://px.a8.net');
+
+			//A8の画像？ 1～25あるみたい(https://bibabosi-rizumu.com/ssl-http-https-afi-link/)
+			for (var i=1 ; i<=25 ; i++){
+			    var reg = new RegExp('http\:\/\/www' + i + '\.a8\.net', 'gi');
+			    content = content.replace(reg, 'https://www' + i + '.a8.net');
+			}		    
+
+
+			//もしもアフィリエイト
+			content = content.replace(/http\:\/\/c\.af\.moshimo\.com/gi, '//af.moshimo.com');
+			content = content.replace(/http\:\/\/image\.moshimo\.com/gi, '//image.moshimo.com');
+			content = content.replace(/http\:\/\/i\.af\.moshimo\.com/gi, '//i.moshimo.com');
+
+			//アクセストレード
+			content = content.replace(/http\:\/\/h\.accesstrade\.net/gi, 'https://h.accesstrade.net');
+
+			//忍者系  『忍者AdMax』,『忍者アクセス解析』,『忍者カウンター』,『忍者おまとめボタン』,『忍者翻訳』,『忍者アクセスランキング』 http://www.ninja.co.jp/information/all_category/10973/
+			content = content.replace(/http\:\/\/admax\.shinobi\.jp/gi, 'https://admax.shinobi.jp');
+			content = content.replace(/http\:\/\/www\.ninja\.co\.jp\/analyze/gi, 'https://www.ninja.co.jp/analyze/');
+			content = content.replace(/http\:\/\/www\.ninja\.co\.jp\/counter/gi, 'https://www.ninja.co.jp/counter/');
+			content = content.replace(/http\:\/\/www\.ninja\.co\.jp\/omatome/gi, 'https://www.ninja.co.jp/omatome/');
+			content = content.replace(/http\:\/\/www\.ninja\.co\.jp\/translator/gi, 'http://www.ninja.co.jp/translator');
+			content = content.replace(/http\:\/\/xranking\.shinobi\.jp/gi, 'https://xranking.shinobi.jp');
+
+			//jquery
+			content = content.replace(/http\:\/\/code\.jquery\.com/gi, 'https://code.jquery.com');
+			content = content.replace(/http\:\/\/ajax\.aspnetcdn\.com/gi, 'https://ajax.aspnetcdn.com');
+
+			//パンくず
+			content = content.replace(/http\:\/\/bulldra\.github\.io/gi, 'https://bulldra.github.io');
+
+			//はてなの画像
+			content = content.replace(/http\:\/\/cdn-ak\.f\.st-hatena\.com/gi, 'https://cdn-ak.f.st-hatena.com');
 
 		    content = escape_content_html(content);
-		    //console.log(content);
 
 	            $ = che.load(data, { xmlMode: true });
 		    var content_type = $("content").attr('type');
@@ -88,20 +142,6 @@ async.series([
 			//console.log(contentauthor);
 		    var control_draft = $("app\\:draft").text();
 
-		    //モードが違う場合はアップしない		
-		    if (hatetena_mode == 'hatena' && content_type != 'text/x-hatena-syntax'){
-			process.exit(1);
-		    }
-		    if (hatetena_mode == 'markdown' && content_type != 'text/x-markdown'){
-			process.exit(1);
-		    }
-		    if (hatetena_mode == 'html' && content_type != 'text/html'){
-			process.exit(1);
-		    }
-
-
-	            //console.log("file-A");
-	            //console.log(content_type);
 	            postdata += '<title>' + escape_html(contenttitle) + '</title>';
 	            postdata += '<author><name>' + escape_html(contentauthor) + '</name></author>';
 	            postdata += '<content type="' + content_type  + '">';
@@ -117,32 +157,22 @@ async.series([
 		    //console.log(postdata);
 		    //process.exit(1);
 
-			header_content_type = "application/x-hatena-syntax";
-
-			//headers ={
-			//    "content-type": "application/x.atom+xml",
-			//    "X-WSSE": token.getWSSEHeader({ nonceBase64: true }),
-			//  };
-
 			headers ={
-			    "content-type": header_content_type,
+			    "content-type": "application/x.atom+xml",
 			    "X-WSSE": token.getWSSEHeader({ nonceBase64: true }),
 			  };
 
-
 			http_request_options = {
-			  url: HATENA_SITE_DIST_URL + '/entry',
-			  method: 'POST',
+			  url: editlink ,
+			  method: 'PUT',
 			  headers: headers,
 			  body: postdata
 			}
-		    //console.log(postdata);
 	            callback(null, "first");
         });
     },
     function (callback) {
 		webclient(http_request_options, function (error, response, body) {
-			//console.log(response.statusCode);
 			if (response.statusCode == '200' || response.statusCode == '201') {
 			    callback(null, "second")
 			} else {
@@ -150,13 +180,14 @@ async.series([
 			    callback(body + "error :" + process.argv[2] , "second")
 			    console.log(body);
 			}
+
 		})
     }
 ], function (err, results) {
     if (err) {
         throw err;
     }
-    console.log('import  ' + process.argv[2]);
+    console.log('prod update  ' + process.argv[2]);
 });
 
 

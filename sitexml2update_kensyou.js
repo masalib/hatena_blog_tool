@@ -45,17 +45,17 @@ var postdata = (function(param) {return param[0];})`<?xml version="1.0" encoding
 <entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app">`;
 
 //読み込むXMLを指定
-var temppath = "./tempxml/" + process.argv[2];
+var temppath = "./kensyou/" + process.argv[2];
 
-
-var hatetena_mode =  process.argv[3];
-if (!(hatetena_mode == 'hatena' || hatetena_mode == 'markdown' || hatetena_mode == 'html')) {
-    console.error('mode error hatena or markdown or html entry');
-    process.exit(1);
-}
+//var hatetena_mode =  process.argv[3];
+//if (!(hatetena_mode == 'hatena' || hatetena_mode == 'markdown' || hatetena_mode == 'html')) {
+//    console.error('mode error hatena or markdown or html entry');
+//    process.exit(1);
+//}
 
 
 var http_request_options;
+var editlink;
 
 async.series([
     function (callback) {
@@ -66,6 +66,7 @@ async.series([
 			process.exit(1);
 		   }
 
+
 		    //summaryは「"」や「'」の閉じ忘れがあるので消す
 		    data = data.replace(/<summary(.|\s)*?<\/(no)?summary>/gi, '');
 
@@ -74,6 +75,65 @@ async.series([
 		    $("content").each(function(i, el) {
 			content = $(this).toString();
 		    });	
+
+		    $("link").each(function(i, el) {
+			if ($(this).attr('rel') == 'edit'){
+				editlink = $(this).attr('href');
+			}
+		    });	
+
+		    //SSL化対応
+			//youtube
+			content = content.replace(/http\:\/\/www\.youtube/gi, 'https://www.youtube');
+			content = content.replace(/http\:\/\/img\.youtube\.com/gi, 'https://img.youtube.com');
+
+			//rakuten
+			content = content.replace(/http\:\/\/thumbnail\.image\.rakuten\.co\.jp/gi, 'https://thumbnail.image.rakuten.co.jp');
+			content = content.replace(/http\:\/\/hbb\.afl\.rakuten\.co\.jp/gi, 'https://hbb.afl.rakuten.co.jp');
+
+			//Amazonアフィリエイト
+			content = content.replace(/http\:\/\/ecx\.images-amazon\.com/gi, 'https://images-fe.ssl-images-amazon.com');
+
+			//楽天アフィリエイト
+			content = content.replace(/http\:\/\/hbb\.afl\.rakuten\.co\.jp/gi, 'https://hbb.afl.rakuten.co.jp');
+			content = content.replace(/http\:\/\/hb\.afl\.rakuten\.co\.jp/gi, 'https://hb.afl.rakuten.co.jp');
+			content = content.replace(/http\:\/\/thumbnail\.image\.rakuten\.co\.jp/gi, 'https://thumbnail.image.rakuten.co.jp');
+
+			//A8 
+			content = content.replace(/http\:\/\/px\.a8\.net/gi, 'https://px.a8.net');
+
+			//A8の画像？ 1～25あるみたい(https://bibabosi-rizumu.com/ssl-http-https-afi-link/)
+			for (var i=1 ; i<=25 ; i++){
+			    var reg = new RegExp('http\:\/\/www' + i + '\.a8\.net', 'gi');
+			    content = content.replace(reg, 'https://www' + i + '.a8.net');
+			}		    
+
+
+			//もしもアフィリエイト
+			content = content.replace(/http\:\/\/c\.af\.moshimo\.com/gi, '//af.moshimo.com');
+			content = content.replace(/http\:\/\/image\.moshimo\.com/gi, '//image.moshimo.com');
+			content = content.replace(/http\:\/\/i\.af\.moshimo\.com/gi, '//i.moshimo.com');
+
+			//アクセストレード
+			content = content.replace(/http\:\/\/h\.accesstrade\.net/gi, 'https://h.accesstrade.net');
+
+			//忍者系  『忍者AdMax』,『忍者アクセス解析』,『忍者カウンター』,『忍者おまとめボタン』,『忍者翻訳』,『忍者アクセスランキング』 http://www.ninja.co.jp/information/all_category/10973/
+			content = content.replace(/http\:\/\/admax\.shinobi\.jp/gi, 'https://admax.shinobi.jp');
+			content = content.replace(/http\:\/\/www\.ninja\.co\.jp\/analyze/gi, 'https://www.ninja.co.jp/analyze/');
+			content = content.replace(/http\:\/\/www\.ninja\.co\.jp\/counter/gi, 'https://www.ninja.co.jp/counter/');
+			content = content.replace(/http\:\/\/www\.ninja\.co\.jp\/omatome/gi, 'https://www.ninja.co.jp/omatome/');
+			content = content.replace(/http\:\/\/www\.ninja\.co\.jp\/translator/gi, 'http://www.ninja.co.jp/translator');
+			content = content.replace(/http\:\/\/xranking\.shinobi\.jp/gi, 'https://xranking.shinobi.jp');
+
+			//jquery
+			content = content.replace(/http\:\/\/code\.jquery\.com/gi, 'https://code.jquery.com');
+			content = content.replace(/http\:\/\/ajax\.aspnetcdn\.com/gi, 'https://ajax.aspnetcdn.com');
+
+			//パンくず
+			content = content.replace(/http\:\/\/bulldra\.github\.io/gi, 'https://bulldra.github.io');
+
+			//はてなの画像
+			content = content.replace(/http\:\/\/cdn-ak\.f\.st-hatena\.com/gi, 'https://cdn-ak.f.st-hatena.com');
 
 		    //console.log(content);
 		    //process.exit(1);
@@ -89,15 +149,15 @@ async.series([
 		    var control_draft = $("app\\:draft").text();
 
 		    //モードが違う場合はアップしない		
-		    if (hatetena_mode == 'hatena' && content_type != 'text/x-hatena-syntax'){
-			process.exit(1);
-		    }
-		    if (hatetena_mode == 'markdown' && content_type != 'text/x-markdown'){
-			process.exit(1);
-		    }
-		    if (hatetena_mode == 'html' && content_type != 'text/html'){
-			process.exit(1);
-		    }
+		    //if (hatetena_mode == 'hatena' && content_type != 'text/x-hatena-syntax'){
+		    //	process.exit(1);
+		    //}
+		    //if (hatetena_mode == 'markdown' && content_type != 'text/x-markdown'){
+		    //	process.exit(1);
+		    //}
+		    //if (hatetena_mode == 'html' && content_type != 'text/html'){
+		    //	process.exit(1);
+		    //}
 
 
 	            //console.log("file-A");
@@ -131,8 +191,8 @@ async.series([
 
 
 			http_request_options = {
-			  url: HATENA_SITE_DIST_URL + '/entry',
-			  method: 'POST',
+			  url: editlink,
+			  method: 'PUT',
 			  headers: headers,
 			  body: postdata
 			}
@@ -156,7 +216,7 @@ async.series([
     if (err) {
         throw err;
     }
-    console.log('import  ' + process.argv[2]);
+    console.log('kensyou update  ' + process.argv[2]);
 });
 
 

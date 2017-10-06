@@ -18,3 +18,4 @@ config.json
 .DS_Store
 Thumbs.db
 
+*.log

@@ -15,7 +15,12 @@ echo 処理を終了します & pause > nul & exit
 echo インポート開始
 
 for %%i in (tempxml/hatena_*.xml) do (
-node sitexml2import.js %%i markdown
+
+echo %%i >> import_markdown.log
+
+node sitexml2import.js %%i markdown  >> import_markdown.log
+echo "\n" >> import_markdown.log
+
 rem ping 127.0.0.1 -n 2 > nul
 )
 

@@ -1,7 +1,6 @@
 
 # masalib hatena blog tool App
 
-
 node.js 8.x more than
 not test node.js 6.x
 
@@ -48,20 +47,45 @@ HATENA_SITE_DIST_URLは検証用のブログを指定します
 置換部分のバグだと思う・・・
 be
 
-## backup (windows OK MacOS OK)
 
+
+## はてなブログのバックアップ
 
 node sitexmldownload.js
+直下にtempxmlというフォルダができ
+xmlファイルが作成されています
+ファイル名はcontent_type　＋　更新日時になります
 
-## import (windows OK MacOS not cording)
 
 
-Html
-import_html_mode.bat
+## バックアップしたXMLを検証用のサイトにimportする
 
-はてな記法モード
-import_hatena_mode.bat
+インポートする場合は、かならずブログの初期登録モードを確認する
 
-markdownモード
-import_markdown_mode.bat
+- Html（見たまま）モードの場合
+-  import_html_mode.bat
+- はてな記法モードの場合
+-   import_hatena_mode.bat
+- markdownモードの場合
+-   import_markdown_mode.bat
+
+## 検証用のサイトをバックアップする
+
+- node sitexmldownload_kensyou.js
+- kensyouというフォルダにxmlができます
+
+## 検証用のサイトへSSLに対応したタグでUPDATEする
+
+- kensyouというフォルダの中のxmlをもとに検証用のサイトへアップします
+- node sitexml2update_kensyou.js XXXXX.xml
+- 一括update
+- update_kensyou.bat
+
+
+## はてなブログ（本番）へSSLに対応したタグでUPDATEする
+
+- tempxmlというフォルダの中のxmlをもとにはてなブログ（本番）へアップします
+- node sitexml2update.js  XXXXX.xml
+- 一括update
+- update_prod.bat
 

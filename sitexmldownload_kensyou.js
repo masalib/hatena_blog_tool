@@ -29,7 +29,7 @@ var fs      = require('fs');
 var path    = require('path');
 var che     = require('cheerio');
 
-const {HATENA_SITE_ID, HATENA_SITE_PW,HATENA_SITE_SOURCE_URL,HATENA_SITE_DIST_URL} = require('./config_kensyou.json');
+const {HATENA_SITE_ID, HATENA_SITE_PW,HATENA_SITE_SOURCE_URL,HATENA_SITE_DIST_URL} = require('./config.json');
 
 
 
@@ -37,8 +37,8 @@ const {HATENA_SITE_ID, HATENA_SITE_PW,HATENA_SITE_SOURCE_URL,HATENA_SITE_DIST_UR
 //階層の指定()
 var LINK_LEVEL = 99;
 
-//基準となるページURL (ブログの詳細の所からコピーするのでentryの文字列がない)
-var TARGET_URL = HATENA_SITE_SOURCE_URL + "/entry";
+//基準となるページURL (検証用なのでHATENA_SITE_DISTを使用する)
+var TARGET_URL = HATENA_SITE_DIST_URL + "/entry";
 
 
 //既出のサイトを定義する。(既出のサイトは無視をする機能があるため。)
