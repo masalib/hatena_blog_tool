@@ -104,20 +104,20 @@ async.series([
 
 		//object check
 		$('object').each(function () {
-			if ($(this).attr('src')){
+			if ($(this).attr('data')){
 				checkcount ++;
-				if ($(this).attr('src').indexOf('http:') > -1){
-					console.log('mixed_check_error,' + alternatelink + ',object:src,' + $(this).attr('src'));
+				if ($(this).attr('data').indexOf('http:') > -1){
+					console.log('mixed_check_error,' + alternatelink + ',object:data,' + $(this).attr('src'));
 					errorcount ++;
 				}
 			}
 		})
 		//form check
 		$('form').each(function () {
-			if ($(this).attr('src')){
+			if ($(this).attr('action')){
 				checkcount ++;
-				if ($(this).attr('src').indexOf('http:') > -1){
-					console.log('mixed_check_error,' + alternatelink + ',form:src,' + $(this).attr('src'));
+				if ($(this).attr('action').indexOf('http:') > -1){
+					console.log('mixed_check_error,' + alternatelink + ',form:action,' + $(this).attr('src'));
 					errorcount ++;
 				}
 			}
@@ -161,23 +161,30 @@ async.series([
 					errorcount ++;
 				}
 			}
+			if ($(this).attr('srcset')){
+				checkcount ++;
+				if ($(this).attr('srcset').indexOf('http:') > -1){
+					console.log('mixed_check_error,' + alternatelink + ',source:srcset,' + $(this).attr('src'));
+					errorcount ++;
+				}
+			}
 		})
 		//param check
 		$('param').each(function () {
-			if ($(this).attr('src')){
+			if ($(this).attr('value')){
 				checkcount ++;
-				if ($(this).attr('src').indexOf('http:') > -1){
-					console.log('mixed_check_error,' + alternatelink + ',param:src,' + $(this).attr('src'));
+				if ($(this).attr('value').indexOf('http:') > -1){
+					console.log('mixed_check_error,' + alternatelink + ',param:value,' + $(this).attr('src'));
 					errorcount ++;
 				}
 			}
 		})
 		//link check
 		$('link').each(function () {
-			if ($(this).attr('src')){
+			if ($(this).attr('href')){
 				checkcount ++;
-				if ($(this).attr('src').indexOf('http:') > -1){
-					console.log('mixed_check_error,' + alternatelink + ',link:src,' + $(this).attr('src'));
+				if ($(this).attr('href').indexOf('http:') > -1){
+					console.log('mixed_check_error,' + alternatelink + ',link:href,' + $(this).attr('src'));
 					errorcount ++;
 				}
 			}
