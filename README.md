@@ -88,3 +88,18 @@ xmlファイルが作成されています<br>
  node sitexml2update.js  XXXXX.xml
 - 一括update<br>
  update_prod.bat
+
+## 検証用のサイトが常時SSLになっているのかチェックする
+
+  - kensyouというフォルダの中のxmlをもとにはてなブログ（本番）が常時SSLになっているのかチェックへアップします<br>
+   node sitexml2mixedcheck.js kensyou XXXXX.xml
+  - 一括チェックする<br>
+   sitexml2mixedcheck_kensyou.bat
+
+
+## はてなブログ（本番）が常時SSLになっているのかチェックする
+
+ - tempxmlというフォルダの中のxmlをもとにはてなブログ（本番）が常時SSLになっているのかチェックへアップします<br>
+  node sitexml2mixedcheck.js tempxml XXXXX.xml
+ - 一括チェックする<br>
+  sitexml2mixedcheck.bat
