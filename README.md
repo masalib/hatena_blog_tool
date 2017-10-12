@@ -13,7 +13,7 @@ Create an account at https://hatena.com/
 Create backup_blog and restore blog
 (バックアップ元ブログとバックアップ先ブログが必要です)
 
-node.js install 
+node.js install
 (node.js 8.x more)
 
 ### インストール
@@ -37,23 +37,23 @@ HATENA_SITE_DIST_URLは検証用のブログを指定します
 
 ## 注意点
 
-このツールははてなブログで設定している為、モードでしかimportできません
+このツールははてなブログで設定している為、モードでしかimportできません<br>
 復元（import）ツールを実行する前に、かならずモードを確認してください
 
 
 ## 認識しているバグ
 
-/＞ →　＞になってしまいます
+/＞ →　＞になってしまいます<br>
 置換部分のバグだと思う・・・
-be
+
 
 
 
 ## はてなブログのバックアップ
 
-node sitexmldownload.js
-直下にtempxmlというフォルダができ
-xmlファイルが作成されています
+node sitexmldownload.js<br>
+直下にtempxmlというフォルダができ<br>
+xmlファイルが作成されています<br>
 ファイル名はcontent_type　＋　更新日時になります
 
 
@@ -62,30 +62,29 @@ xmlファイルが作成されています
 
 インポートする場合は、かならずブログの初期登録モードを確認する
 
-- Html（見たまま）モードの場合
--  import_html_mode.bat
-- はてな記法モードの場合
--   import_hatena_mode.bat
-- markdownモードの場合
--   import_markdown_mode.bat
+- Html（見たまま）モードの場合<br>
+ import_html_mode.bat
+- はてな記法モードの場合<br>
+   import_hatena_mode.bat
+- markdownモードの場合<br>
+   import_markdown_mode.bat
 
 ## 検証用のサイトをバックアップする
 
-- node sitexmldownload_kensyou.js
-- kensyouというフォルダにxmlができます
+- node sitexmldownload_kensyou.js<br>
+ kensyouというフォルダにxmlができます
 
 ## 検証用のサイトへSSLに対応したタグでUPDATEする
 
-- kensyouというフォルダの中のxmlをもとに検証用のサイトへアップします
-- node sitexml2update_kensyou.js XXXXX.xml
-- 一括update
-- update_kensyou.bat
+- kensyouというフォルダの中のxmlをもとに検証用のサイトへアップします<br>
+ node sitexml2update_kensyou.js XXXXX.xml
+- 一括update<br>
+ update_kensyou.bat
 
 
 ## はてなブログ（本番）へSSLに対応したタグでUPDATEする
 
-- tempxmlというフォルダの中のxmlをもとにはてなブログ（本番）へアップします
-- node sitexml2update.js  XXXXX.xml
-- 一括update
-- update_prod.bat
-
+- tempxmlというフォルダの中のxmlをもとにはてなブログ（本番）へアップします<br>
+ node sitexml2update.js  XXXXX.xml
+- 一括update<br>
+ update_prod.bat
